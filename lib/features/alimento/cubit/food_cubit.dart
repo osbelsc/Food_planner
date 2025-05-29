@@ -19,4 +19,20 @@ class FoodCubit extends Cubit<List<FoodItem>> {
     _box.deleteAt(index);
     emit(_box.values.toList());
   }
+
+  void createFood({
+    required String name,
+    required int calories,
+    required String description,
+    String? imagePath,
+  }) {
+    final food = FoodItem(
+      name: name,
+      calories: calories,
+      description: description,
+      imagePath: imagePath,
+    );
+    _box.add(food);
+    emit(_box.values.toList());
+  }
 }

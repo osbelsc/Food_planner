@@ -24,6 +24,7 @@ Future<void> main() async {
   Hive.registerAdapter(FoodItemAdapter());
   Hive.registerAdapter(MealAdapter());
   Hive.registerAdapter(DailyPlanAdapter());
+  Hive.registerAdapter(RecipeAdapter());
 
   await Hive.openBox<FoodItem>('foods');
   await Hive.openBox<DailyPlan>('plans');
