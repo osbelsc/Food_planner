@@ -1,29 +1,25 @@
-// lib/features/alimento/screens/add_food_item_screen.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import '../cubit/food_cubit.dart';
-import '../models/food_item.dart';
 
 class AddFoodScreen extends StatefulWidget {
   @override
   _AddFoodScreenState createState() => _AddFoodScreenState();
 }
 
-class _AddFoodScreenState extends State {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _AddFoodScreenState extends State<AddFoodScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _caloriesController = TextEditingController();
   final _descriptionController = TextEditingController();
   File? _image;
 
-  Future _pickImage() async {
+  Future<void> _pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked != null) {
-      setState(() {
-        _image = File(picked.path);
-      });
+      setState(() => _image = File(picked.path));
     }
   }
 
@@ -33,13 +29,13 @@ class _AddFoodScreenState extends State {
       final calories = int.parse(_caloriesController.text.trim());
       final description = _descriptionController.text.trim();
       final imagePath = _image?.path;
-      context.read<FoodCubit>().createFood(
+
+      context.read<FoodProvider>().createFood(
         name: name,
         calories: calories,
         description: description,
         imagePath: imagePath,
       );
-
       Navigator.pop(context);
     }
   }
@@ -67,7 +63,7 @@ class _AddFoodScreenState extends State {
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Requerido';
                   final n = int.tryParse(v);
-                  if (n == null || n <= 0) return 'Ingrese un número válido';
+                  if (n == null || n <= 0) return 'Número inválido';
                   return null;
                 },
               ),

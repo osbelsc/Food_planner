@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_planner_app/features/alimento/cubit/daily_plan_cubit.dart';
-import 'package:food_planner_app/features/alimento/cubit/food_cubit.dart';
-import 'package:food_planner_app/features/alimento/models/meal.dart';
-import 'package:food_planner_app/features/alimento/widgets/meal_card.dart';
+import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
+import 'package:food_planner_app/features/calendar/providers/daily_plan_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../alimento/models/meal.dart';
+import '../../alimento/widgets/meal_card.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -13,15 +14,14 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime _selectedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    final allFoods = context.watch<FoodCubit>().state;
-    // Obtén el plan diario actual (o uno nuevo si no existe)
-    final plan =
-        context.read<DailyPlanCubit>().getPlan(_selectedDay ?? DateTime.now())!;
-    // Extrae o crea las meals
+    final allFoods = context.watch<FoodProvider>().foods;
+    final planProvider = context.watch<DailyPlanProvider>();
+    final plan = planProvider.getPlan(_selectedDay);
+
     final desayuno = plan.meals.firstWhere(
       (m) => m.type == 'Desayuno',
       orElse: () => Meal(type: 'Desayuno'),
@@ -44,10 +44,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
             lastDay: DateTime.utc(2030),
             focusedDay: _focusedDay,
             selectedDayPredicate: (d) => isSameDay(d, _selectedDay),
-            onDaySelected: (sel, foc) {
+            onDaySelected: (selected, focused) {
               setState(() {
-                _selectedDay = sel;
-                _focusedDay = foc;
+                _selectedDay = selected;
+                _focusedDay = focused;
               });
             },
           ),
@@ -61,8 +61,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   allFoods: allFoods,
                   onAddFoodToMeal: (food) {
                     desayuno.items.add(food);
-                    context.read<DailyPlanCubit>().savePlan(plan);
-                    setState(() {}); // refresca la UI
+                    planProvider.savePlan(plan);
                   },
                 ),
                 MealCard(
@@ -71,8 +70,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   allFoods: allFoods,
                   onAddFoodToMeal: (food) {
                     almuerzo.items.add(food);
-                    context.read<DailyPlanCubit>().savePlan(plan);
-                    setState(() {});
+                    planProvider.savePlan(plan);
                   },
                 ),
                 MealCard(
@@ -81,8 +79,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   allFoods: allFoods,
                   onAddFoodToMeal: (food) {
                     cena.items.add(food);
-                    context.read<DailyPlanCubit>().savePlan(plan);
-                    setState(() {});
+                    planProvider.savePlan(plan);
                   },
                 ),
               ],

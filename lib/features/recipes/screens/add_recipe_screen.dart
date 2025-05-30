@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_planner_app/features/alimento/models/food_item.dart';
-import 'package:food_planner_app/features/recipes/cubit/recipe_cubit.dart';
+import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
+import 'package:provider/provider.dart';
+import '../../alimento/models/food_item.dart';
 
 class AddRecipeScreen extends StatefulWidget {
   @override
@@ -20,22 +19,21 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
     if (name.isNotEmpty && calories > 0) {
       final item = FoodItem(name: name, calories: calories, description: '');
-      context.read<RecipeCubit>().addTempItem(item);
+      context.read<RecipeProvider>().addTempItem(item);
       _foodNameController.clear();
       _caloriesController.clear();
-      setState(() {}); // Solo para actualizar la lista temporal
     }
   }
 
   void _onSaveRecipe() {
-    context.read<RecipeCubit>().updateTempName(_nameController.text);
-    context.read<RecipeCubit>().saveTempRecipe();
+    context.read<RecipeProvider>().updateTempName(_nameController.text);
+    context.read<RecipeProvider>().saveTempRecipe();
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final tempItems = context.read<RecipeCubit>().tempItems;
+    final tempItems = context.watch<RecipeProvider>().tempItems;
 
     return Scaffold(
       appBar: AppBar(title: Text('Nueva Receta')),

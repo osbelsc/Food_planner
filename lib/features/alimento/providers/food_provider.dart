@@ -1,23 +1,32 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+// lib/features/alimento/provider/food_provider.dart
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import '../models/food_item.dart';
 
-class FoodCubit extends Cubit<List<FoodItem>> {
+class FoodProvider extends ChangeNotifier {
   late final Box<FoodItem> _box;
+  List<FoodItem> _foods = [];
 
-  FoodCubit() : super([]) {
+  List<FoodItem> get foods => _foods;
+
+  FoodProvider() {
     _box = Hive.box<FoodItem>('foods');
-    emit(_box.values.toList());
+    _loadFoods();
+  }
+
+  void _loadFoods() {
+    _foods = _box.values.toList();
+    notifyListeners();
   }
 
   void addFood(FoodItem item) {
     _box.add(item);
-    emit(_box.values.toList());
+    _loadFoods();
   }
 
-  void removeFood(int index) {
+  void removeFoodAt(int index) {
     _box.deleteAt(index);
-    emit(_box.values.toList());
+    _loadFoods();
   }
 
   void createFood({
@@ -33,6 +42,6 @@ class FoodCubit extends Cubit<List<FoodItem>> {
       imagePath: imagePath,
     );
     _box.add(food);
-    emit(_box.values.toList());
+    _loadFoods();
   }
 }
