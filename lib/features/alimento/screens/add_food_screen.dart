@@ -1,8 +1,7 @@
-import 'dart:io';
+// lib/features/alimento/screens/add_food_screen.dart
 import 'package:flutter/material.dart';
-import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
+import '../providers/food_provider.dart';
 
 class AddFoodScreen extends StatefulWidget {
   @override
@@ -14,27 +13,13 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   final _nameController = TextEditingController();
   final _caloriesController = TextEditingController();
   final _descriptionController = TextEditingController();
-  File? _image;
 
-  Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() => _image = File(picked.path));
-    }
-  }
-
-  void _save() {
+  void _save(FoodProvider provider) async {
     if (_formKey.currentState!.validate()) {
-      final name = _nameController.text.trim();
-      final calories = int.parse(_caloriesController.text.trim());
-      final description = _descriptionController.text.trim();
-      final imagePath = _image?.path;
-
-      context.read<FoodProvider>().createFood(
-        name: name,
-        calories: calories,
-        description: description,
-        imagePath: imagePath,
+      await provider.createFood(
+        name: _nameController.text.trim(),
+        calories: int.parse(_caloriesController.text.trim()),
+        description: _descriptionController.text.trim(),
       );
       Navigator.pop(context);
     }
@@ -42,6 +27,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<FoodProvider>();
     return Scaffold(
       appBar: AppBar(title: Text('Agregar Alimento')),
       body: Padding(
@@ -79,15 +65,23 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
-              if (_image != null)
-                Image.file(_image!, height: 120, width: 120, fit: BoxFit.cover),
+              if (provider.selectedImage != null)
+                Image.file(
+                  provider.selectedImage!,
+                  height: 120,
+                  width: 120,
+                  fit: BoxFit.cover,
+                ),
               TextButton.icon(
-                onPressed: _pickImage,
+                onPressed: provider.pickImage,
                 icon: Icon(Icons.photo),
                 label: Text('Seleccionar imagen'),
               ),
               SizedBox(height: 24),
-              ElevatedButton(onPressed: _save, child: Text('Guardar Alimento')),
+              ElevatedButton(
+                onPressed: () => _save(provider),
+                child: Text('Guardar Alimento'),
+              ),
             ],
           ),
         ),
