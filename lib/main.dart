@@ -1,67 +1,59 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_planner_app/features/alimento/screens/food_list_screen.dart';
-import 'package:food_planner_app/features/home/screens/main_screen.dart';
-import 'package:food_planner_app/features/recipes/cubit/recipe_cubit.dart';
-import 'package:food_planner_app/features/recipes/models/recipe.dart';
+import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
+import 'package:food_planner_app/features/calendar/providers/daily_plan_provider.dart';
+import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:food_planner_app/features/user/cubit/name_imput_cubit.dart';
-import 'package:food_planner_app/features/user/screens/name_imput_screen.dart';
-import 'package:food_planner_app/core/prefs/shared_preferences.dart';
-import 'features/alimento/cubit/food_cubit.dart';
-import 'features/alimento/cubit/daily_plan_cubit.dart';
+import 'features/alimento/screens/food_list_screen.dart';
+import 'features/home/screens/main_screen.dart';
+
+import 'features/recipes/models/recipe.dart';
 import 'features/alimento/models/food_item.dart';
 import 'features/alimento/models/meal.dart';
 import 'features/alimento/models/daily_plan.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'core/prefs/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  //await Hive.deleteFromDisk();
 
+  // Registración de adaptadores de Hive
   Hive.registerAdapter(FoodItemAdapter());
   Hive.registerAdapter(MealAdapter());
   Hive.registerAdapter(DailyPlanAdapter());
   Hive.registerAdapter(RecipeAdapter());
 
+  // Apertura de boxes
   await Hive.openBox<FoodItem>('foods');
   await Hive.openBox<DailyPlan>('plans');
   await Hive.openBox<Recipe>('recipes');
 
+  // Preferencias del usuario
   final prefs = PreferenciasUsuario();
   await prefs.initPrefs();
-  final username = prefs.usuario.isNotEmpty ? prefs.usuario : null;
 
-  runApp(MyApp(username: username));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FoodProvider()),
+        ChangeNotifierProvider(create: (_) => RecipeProvider()),
+        ChangeNotifierProvider(create: (_) => DailyPlanProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  final String? username;
-  const MyApp({required this.username});
-
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => FoodCubit()),
-        BlocProvider(create: (_) => DailyPlanCubit()),
-        BlocProvider(create: (_) => UserCubit()),
-        BlocProvider(create: (_) => RecipeCubit()),
-      ],
-      child: MaterialApp(
-        title: 'Food Planner',
-        theme: ThemeData(primarySwatch: Colors.green),
-        initialRoute: '/',
-        routes: {
-          // Pantalla inicial que valida si ya hay usuario
-          '/': (context) => MainScreen(),
-          '/foods': (_) => FoodListScreen(),
-          '/name_input': (context) => NameInputScreen(),
-          // Agrega más rutas si tienes
-        },
-      ),
+    return MaterialApp(
+      title: 'Food Planner',
+      theme: ThemeData(primarySwatch: Colors.green),
+      initialRoute: '/',
+      routes: {'/': (_) => MainScreen(), '/foods': (_) => FoodListScreen()},
     );
   }
 }

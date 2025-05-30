@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_planner_app/features/alimento/cubit/food_cubit.dart';
+import 'package:food_planner_app/features/alimento/providers/food_cubit.dart';
 import 'package:food_planner_app/features/user/cubit/name_imput_cubit.dart';
 
 import 'package:food_planner_app/features/alimento/models/food_item.dart';
