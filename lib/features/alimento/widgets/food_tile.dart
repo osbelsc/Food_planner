@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:food_planner_app/core/constants/textstyle.dart";
 import "package:food_planner_app/features/alimento/models/food_item.dart";
 
 class FoodTile extends StatelessWidget {
@@ -15,11 +16,11 @@ class FoodTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(
-        food.name,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      title: Text(food.name, style: TextStyleClass.poppinsRegular(size: 16.0)),
+      subtitle: Text(
+        '${food.calories} cal',
+        style: TextStyleClass.poppinsRegular(),
       ),
-      subtitle: Text('${food.calories} cal'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

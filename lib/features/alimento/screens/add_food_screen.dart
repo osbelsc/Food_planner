@@ -1,5 +1,6 @@
 // lib/features/alimento/screens/add_food_screen.dart
 import 'package:flutter/material.dart';
+import 'package:food_planner_app/core/constants/textstyle.dart';
 import 'package:provider/provider.dart';
 import '../providers/food_provider.dart';
 
@@ -29,7 +30,12 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
   Widget build(BuildContext context) {
     final provider = context.watch<FoodProvider>();
     return Scaffold(
-      appBar: AppBar(title: Text('Agregar Alimento')),
+      appBar: AppBar(
+        title: Text(
+          'Agregar Alimento',
+          style: TextStyleClass.poppinsBold(size: 18.0),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -60,10 +66,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
                 validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
               ),
               SizedBox(height: 12),
-              Text(
-                'Imagen (opcional)',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text('Imagen (opcional)', style: TextStyleClass.poppinsBold()),
               SizedBox(height: 8),
               if (provider.selectedImage != null)
                 Image.file(
@@ -75,12 +78,18 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
               TextButton.icon(
                 onPressed: provider.pickImage,
                 icon: Icon(Icons.photo),
-                label: Text('Seleccionar imagen'),
+                label: Text(
+                  'Seleccionar imagen',
+                  style: TextStyleClass.poppinsRegular(),
+                ),
               ),
               SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () => _save(provider),
-                child: Text('Guardar Alimento'),
+                child: Text(
+                  'Guardar Alimento',
+                  style: TextStyleClass.poppinsRegular(),
+                ),
               ),
             ],
           ),

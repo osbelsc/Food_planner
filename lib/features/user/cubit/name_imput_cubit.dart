@@ -1,23 +1,26 @@
-// lib/cubit/user_cubit.dart
-import 'package:flutter_bloc/flutter_bloc.dart';
+// lib/features/user/providers/user_provider.dart
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserCubit extends Cubit<String> {
-  static const _keyUsername = 'username';
+class UserProvider extends ChangeNotifier {
+  String _username = '';
 
-  UserCubit() : super('') {
+  String get username => _username;
+
+  UserProvider() {
     loadUsername();
   }
 
   Future<void> loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
-    final username = prefs.getString(_keyUsername) ?? '';
-    emit(username);
+    _username = prefs.getString('username') ?? '';
+    notifyListeners();
   }
 
-  Future<void> setUsername(String username) async {
+  Future<void> setUsername(String name) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyUsername, username);
-    emit(username);
+    _username = name;
+    await prefs.setString('username', name);
+    notifyListeners();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_planner_app/core/constants/textstyle.dart';
 import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
 import 'package:provider/provider.dart';
 import '../../alimento/models/food_item.dart';
@@ -36,7 +37,12 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     final tempItems = context.watch<RecipeProvider>().tempItems;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Nueva Receta')),
+      appBar: AppBar(
+        title: Text(
+          'Nueva Receta',
+          style: TextStyleClass.poppinsBold(size: 18.0),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -46,10 +52,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               decoration: InputDecoration(labelText: 'Nombre de la receta'),
             ),
             SizedBox(height: 20),
-            Text(
-              'Agregar Ingrediente',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text('Agregar Ingrediente', style: TextStyleClass.poppinsBold()),
             TextField(
               controller: _foodNameController,
               decoration: InputDecoration(labelText: 'Nombre del alimento'),
@@ -66,18 +69,24 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
             Divider(height: 30),
             Text(
               'Ingredientes agregados:',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyleClass.poppinsSemiBold(),
             ),
             ...tempItems.map(
               (item) => ListTile(
-                title: Text(item.name),
-                subtitle: Text('${item.calories} cal'),
+                title: Text(item.name, style: TextStyleClass.poppinsSemiBold()),
+                subtitle: Text(
+                  '${item.calories} cal',
+                  style: TextStyleClass.poppinsRegular(),
+                ),
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _onSaveRecipe,
-              child: Text('Guardar receta'),
+              child: Text(
+                'Guardar receta',
+                style: TextStyleClass.poppinsBold(),
+              ),
             ),
           ],
         ),

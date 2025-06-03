@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_planner_app/core/constants/textstyle.dart';
 import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
 import 'package:food_planner_app/features/recipes/screens/add_recipe_Screen.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ class RecipeListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recetas'),
+        title: Text('Recetas', style: TextStyleClass.poppinsBold(size: 18.0)),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -28,7 +29,7 @@ class RecipeListScreen extends StatelessWidget {
               ? Center(
                 child: Text(
                   'No hay recetas agregadas',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyleClass.poppinsRegular(size: 16.0),
                 ),
               )
               : ListView.builder(
@@ -49,10 +50,7 @@ class RecipeListScreen extends StatelessWidget {
                         children: [
                           Text(
                             recipe.name,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: TextStyleClass.poppinsBold(size: 18.0),
                           ),
                           SizedBox(height: 8),
                           ...recipe.items.map(
@@ -60,7 +58,7 @@ class RecipeListScreen extends StatelessWidget {
                               padding: EdgeInsets.symmetric(vertical: 2),
                               child: Text(
                                 '• ${item.name} (${item.calories} cal)',
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyleClass.poppinsRegular(),
                               ),
                             ),
                           ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_planner_app/core/constants/textstyle.dart';
 import 'package:food_planner_app/features/alimento/models/meal.dart';
 import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
-import 'package:food_planner_app/features/alimento/widgets/meal_card.dart';
+import 'package:food_planner_app/features/calendar/widgets/meal_card.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -41,7 +42,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final cena = findMeal('Cena');
 
     return Scaffold(
-      appBar: AppBar(title: Text('Planificador de Comidas')),
+      appBar: AppBar(
+        title: Text(
+          'Planificador de Comidas',
+          style: TextStyleClass.poppinsBold(size: 18.0),
+        ),
+      ),
       body: Column(
         children: [
           // Calendario

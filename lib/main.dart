@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
 import 'package:food_planner_app/features/calendar/providers/daily_plan_provider.dart';
 import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
+import 'package:food_planner_app/features/user/cubit/name_imput_cubit.dart';
 import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -40,6 +41,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => FoodProvider()),
         ChangeNotifierProvider(create: (_) => RecipeProvider()),
         ChangeNotifierProvider(create: (_) => DailyPlanProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MyApp(),
     ),
