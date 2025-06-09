@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:food_planner_app/core/widgets/buttons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:food_planner_app/core/constants/textstyle.dart';
 import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +17,10 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final _foodNameController = TextEditingController();
   final _caloriesController = TextEditingController();
 
+  File? _imageFile; // NUEVO: Imagen seleccionada
+
+  final ImagePicker _picker = ImagePicker();
+
   void _onAddItem() {
     final name = _foodNameController.text.trim();
     final calories = int.tryParse(_caloriesController.text) ?? 0;
@@ -28,8 +35,20 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
 
   void _onSaveRecipe() {
     context.read<RecipeProvider>().updateTempName(_nameController.text);
+    context.read<RecipeProvider>().updateTempImagePath(
+      _imageFile?.path,
+    ); // NUEVO: guarda imagen
     context.read<RecipeProvider>().saveTempRecipe();
     Navigator.pop(context);
+  }
+
+  Future<void> _pickImage() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() {
+        _imageFile = File(picked.path);
+      });
+    }
   }
 
   @override
@@ -52,6 +71,27 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               decoration: InputDecoration(labelText: 'Nombre de la receta'),
             ),
             SizedBox(height: 20),
+
+            // NUEVO: Sección para imagen
+            Text('Imagen de la receta', style: TextStyleClass.poppinsBold()),
+            SizedBox(height: 10),
+            GestureDetector(
+              onTap: _pickImage,
+              child:
+                  _imageFile == null
+                      ? Container(
+                        height: 150,
+                        color: Colors.grey[200],
+                        child: Icon(
+                          Icons.add_a_photo,
+                          size: 40,
+                          color: Colors.grey,
+                        ),
+                      )
+                      : Image.file(_imageFile!, height: 150, fit: BoxFit.cover),
+            ),
+
+            SizedBox(height: 20),
             Text('Agregar Ingrediente', style: TextStyleClass.poppinsBold()),
             TextField(
               controller: _foodNameController,
@@ -62,10 +102,8 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               decoration: InputDecoration(labelText: 'Calorías'),
               keyboardType: TextInputType.number,
             ),
-            ElevatedButton(
-              onPressed: _onAddItem,
-              child: Text('Agregar alimento'),
-            ),
+            CustomButton(text: 'Agregar alimento', onPressed: _onAddItem),
+
             Divider(height: 30),
             Text(
               'Ingredientes agregados:',
@@ -81,13 +119,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _onSaveRecipe,
-              child: Text(
-                'Guardar receta',
-                style: TextStyleClass.poppinsBold(),
-              ),
-            ),
+            CustomButton(text: 'Guardar receta', onPressed: _onSaveRecipe),
           ],
         ),
       ),

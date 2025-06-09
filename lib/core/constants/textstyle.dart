@@ -3,7 +3,7 @@ import 'package:food_planner_app/core/constants/color.dart';
 import 'package:flutter/material.dart';
 
 class TextStyleClass {
-  ///SourceSansPro Regular
+  ///Poppins Regular
   static poppinsRegular({var color, var size}) {
     return TextStyle(
       color: color ?? ColorConst.black,
@@ -13,7 +13,7 @@ class TextStyleClass {
     );
   }
 
-  ///SourceSansPro medium
+  ///Poppins semibold
   static poppinsSemiBold({var color, var size}) {
     return TextStyle(
       color: color ?? ColorConst.black,
@@ -23,7 +23,7 @@ class TextStyleClass {
     );
   }
 
-  ///SourceSansPro semiBold
+  ///Poppins Bold
   static poppinsBold({var color, var size}) {
     return TextStyle(
       color: color ?? ColorConst.black,

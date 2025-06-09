@@ -11,5 +11,12 @@ class Recipe extends HiveObject {
   @HiveField(1)
   List<FoodItem> items;
 
-  Recipe({required this.name, required this.items});
+  @HiveField(2)
+  String? imagePath; // NUEVO CAMPO PARA LA IMAGEN
+
+  Recipe({
+    required this.name,
+    required this.items,
+    this.imagePath, // también lo agregas al constructor
+  });
 }

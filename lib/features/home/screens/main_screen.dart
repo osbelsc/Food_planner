@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_planner_app/features/calendar/screens/calendar_screen.dart';
 import 'package:food_planner_app/features/alimento/screens/food_list_screen.dart';
+import 'package:food_planner_app/features/home/screens/home_screen.dart';
 import 'package:food_planner_app/features/recipes/screens/recipe_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // Aquí defines las vistas para cada tab
   final List<Widget> _screens = [
+    HomeScreen(),
     FoodListScreen(),
     CalendarScreen(),
     RecipeListScreen(),
@@ -27,13 +29,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex], // Cambia el body dinámicamente
+      body: _screens[_selectedIndex],
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.fastfood),
             label: 'Alimentos',

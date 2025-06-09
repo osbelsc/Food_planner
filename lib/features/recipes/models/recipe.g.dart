@@ -19,17 +19,20 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
     return Recipe(
       name: fields[0] as String,
       items: (fields[1] as List).cast<FoodItem>(),
+      imagePath: fields[2] as String?, // <--- nuevo campo leído
     );
   }
 
   @override
   void write(BinaryWriter writer, Recipe obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3) // <-- número total de campos
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.items);
+      ..write(obj.items)
+      ..writeByte(2)
+      ..write(obj.imagePath); // <--- nuevo campo escrito
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:food_planner_app/core/constants/textstyle.dart';
 import 'package:food_planner_app/features/recipes/providers/recipe_provider.dart';
@@ -16,11 +18,12 @@ class RecipeListScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add),
             tooltip: 'Agregar receta',
-            onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AddRecipeScreen()),
-                ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AddRecipeScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -37,33 +40,61 @@ class RecipeListScreen extends StatelessWidget {
                 itemCount: recipes.length,
                 itemBuilder: (context, index) {
                   final recipe = recipes[index];
+
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 6),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    elevation: 2,
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            recipe.name,
-                            style: TextStyleClass.poppinsBold(size: 18.0),
-                          ),
-                          SizedBox(height: 8),
-                          ...recipe.items.map(
-                            (item) => Padding(
-                              padding: EdgeInsets.symmetric(vertical: 2),
-                              child: Text(
-                                '• ${item.name} (${item.calories} cal)',
-                                style: TextStyleClass.poppinsRegular(),
-                              ),
+                    elevation: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Imagen (si existe)
+                        if (recipe.imagePath != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(12),
+                            ),
+                            child: Image.file(
+                              File(recipe.imagePath!),
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                        ],
-                      ),
+                        Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                recipe.name,
+                                style: TextStyleClass.poppinsBold(size: 18.0),
+                              ),
+                              SizedBox(height: 8),
+                              ...recipe.items.map(
+                                (item) => Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 2),
+                                  child: Text(
+                                    '• ${item.name} (${item.calories} cal)',
+                                    style: TextStyleClass.poppinsRegular(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          tooltip: 'Eliminar receta',
+                          onPressed: () {
+                            context.read<RecipeProvider>().removeRecipeAt(
+                              index,
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   );
                 },

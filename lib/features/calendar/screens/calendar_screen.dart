@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_planner_app/core/constants/textstyle.dart';
+import 'package:food_planner_app/features/alimento/models/daily_plan.dart';
 import 'package:food_planner_app/features/alimento/models/meal.dart';
 import 'package:food_planner_app/features/alimento/providers/food_provider.dart';
 import 'package:food_planner_app/features/calendar/widgets/meal_card.dart';
@@ -16,22 +17,46 @@ class CalendarScreen extends StatefulWidget {
 class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  DailyPlan? _plan;
+
+  @override
+  void initState() {
+    super.initState();
+    // Espera hasta que se construya para acceder al provider sin error
+    Future.microtask(() {
+      final planProv = context.read<DailyPlanProvider>();
+      final plan = planProv.getPlan(_selectedDay);
+      setState(() => _plan = plan);
+    });
+  }
+
+  void _onDaySelected(DateTime selected, DateTime focused) {
+    setState(() {
+      _selectedDay = selected;
+      _focusedDay = focused;
+      _plan = context.read<DailyPlanProvider>().getPlan(selected);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final foodProv = context.watch<FoodProvider>();
-    final planProv = context.watch<DailyPlanProvider>();
 
-    // Obtener o crear plan para la fecha seleccionada
-    final plan = planProv.getPlan(_selectedDay);
+    if (_plan == null) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      // return Scaffold(
+      //   appBar: AppBar(title: Text('Planificador de Comidas')),
+      //   body: Center(child: CircularProgressIndicator()),
+      // );
+    }
 
     // Extraer comidas por tipo
     Meal findMeal(String type) {
-      return plan.meals.firstWhere(
+      return _plan!.meals.firstWhere(
         (m) => m.type == type,
         orElse: () {
           final m = Meal(type: type);
-          plan.meals.add(m);
+          _plan!.meals.add(m);
           return m;
         },
       );
@@ -50,18 +75,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
       body: Column(
         children: [
-          // Calendario
           TableCalendar(
             firstDay: DateTime.utc(2020, 1, 1),
             lastDay: DateTime.utc(2030, 12, 31),
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
-            onDaySelected: (selected, focused) {
-              setState(() {
-                _selectedDay = selected;
-                _focusedDay = focused;
-              });
-            },
+            onDaySelected: _onDaySelected,
             calendarStyle: CalendarStyle(
               selectedDecoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
@@ -80,7 +99,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   allFoods: foodProv.foods,
                   onAddFoodToMeal: (food) {
                     desayuno.items.add(food);
-                    planProv.savePlan(plan);
+                    context.read<DailyPlanProvider>().savePlan(_plan!);
                   },
                 ),
                 MealCard(
@@ -89,7 +108,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   allFoods: foodProv.foods,
                   onAddFoodToMeal: (food) {
                     almuerzo.items.add(food);
-                    planProv.savePlan(plan);
+                    context.read<DailyPlanProvider>().savePlan(_plan!);
                   },
                 ),
                 MealCard(
@@ -98,7 +117,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   allFoods: foodProv.foods,
                   onAddFoodToMeal: (food) {
                     cena.items.add(food);
-                    planProv.savePlan(plan);
+                    context.read<DailyPlanProvider>().savePlan(_plan!);
                   },
                 ),
               ],
