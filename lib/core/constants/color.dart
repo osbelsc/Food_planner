@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class ColorConst {
   static Color black = Colors.black;
   static Color white = Colors.white;
-  static Color fontcolor = Color.fromARGB(255, 18, 153, 144);
 
   static Color appColor1 = Color.fromARGB(255, 255, 251, 222);
   static Color appColor2 = Color.fromARGB(255, 144, 209, 203);
