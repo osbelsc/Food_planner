@@ -17,27 +17,29 @@ class HomeScreen extends StatelessWidget {
     final username = context.watch<UserProvider>().username;
 
     return Scaffold(
-      backgroundColor: ColorConst.appColor1,
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Bienvenido!',
-              style: TextStyleClass.poppinsBold(
-                color: ColorConst.fontcolor,
-                size: 35.0,
+      backgroundColor: ColorConst.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Bienvenido!',
+                style: TextStyleClass.poppinsBold(
+                  color: ColorConst.appColor4,
+                  size: 35.0,
+                ),
               ),
-            ),
-            Text(
-              'Que vamos a cocinar hoy?',
-              style: TextStyleClass.poppinsRegular(
-                color: ColorConst.fontcolor,
-                size: 25.0,
+              Text(
+                'Que vamos a cocinar hoy?',
+                style: TextStyleClass.poppinsRegular(
+                  color: ColorConst.appColor4,
+                  size: 25.0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

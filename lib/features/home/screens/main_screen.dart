@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:food_planner_app/core/constants/color.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:food_planner_app/features/calendar/screens/calendar_screen.dart';
 import 'package:food_planner_app/features/alimento/screens/food_list_screen.dart';
 import 'package:food_planner_app/features/home/screens/home_screen.dart';
@@ -12,7 +14,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Aquí defines las vistas para cada tab
   final List<Widget> _screens = [
     HomeScreen(),
     FoodListScreen(),
@@ -20,37 +21,41 @@ class _MainScreenState extends State<MainScreen> {
     RecipeListScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fastfood),
-            label: 'Alimentos',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: ColorConst.appColor1,
+          boxShadow: [
+            BoxShadow(blurRadius: 10, color: Colors.black.withOpacity(0.1)),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+          child: GNav(
+            gap: 5,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            backgroundColor: ColorConst.appColor1,
+            tabBackgroundColor: ColorConst.appColor4,
+            color: Colors.grey[500],
+            activeColor: ColorConst.appColor1,
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            tabs: const [
+              GButton(icon: Icons.home, text: 'Home'),
+              GButton(icon: Icons.fastfood, text: 'Alimentos'),
+              GButton(icon: Icons.calendar_today, text: 'Calendario'),
+              GButton(icon: Icons.menu_book, text: 'Recetas'),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendario',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fastfood_rounded),
-            label: 'Recetas',
-          ),
-        ],
+        ),
       ),
     );
   }
